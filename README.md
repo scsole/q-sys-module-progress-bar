@@ -18,6 +18,6 @@ Add a meter or fader control and style it as desired. The `Units`, `Min`, and `M
 ```lua
 local ProgressBar = require('progress-bar')
 local myBar = ProgressBar:New(Controls.ProgressMeter, 10, false)
-local myBar:Start()
-local myBar:End()
+myBar:Start()
+myBar:End()
 ```
