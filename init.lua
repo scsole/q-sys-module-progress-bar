@@ -11,24 +11,38 @@ function ProgressBar:New(control, rampTime, invert)
     Control = control,
     RampTime = rampTime or 10,
     SkipRampTime = 0.2,
-    Invert = invert or false
+    Invert = invert or false,
+    _timer = Timer.New(),
+    EventHandler = nil
   }
+
+  obj._timer.EventHandler = function()
+    obj._timer:Stop()
+    if obj.EventHandler ~= nil then
+      obj.EventHandler()
+    end
+  end
+
   self.__index = self
   return setmetatable(obj, self)
 end
 
 --- (Re)Start the progress bar ramp from the beginning value.
 function ProgressBar:Start()
+  self._timer:Stop()
   self.Control.RampTime = 0
   self.Control.Position = self.invert and 1 or 0
   self.Control.RampTime = self.RampTime
   self.Control.Position = self.invert and 0 or 1
+  self._timer:Start(self.RampTime)
 end
 
 --- Quickly ramp the progress bar to the end from it's current position.
 function ProgressBar:Skip()
+  self._timer:Stop()
   self.Control.RampTime = self.SkipRampTime
   self.Control.Position = self.invert and 0 or 1
+  self._timer:Start(self.SkipRampTime)
 end
 
 return ProgressBar
