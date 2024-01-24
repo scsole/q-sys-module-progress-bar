@@ -1,6 +1,24 @@
 --- @module 'progress-bar'
 local ProgressBar = {}
 
+local function raiseEvent(self)
+  if self.EventHandler ~= nil then
+    self.EventHandler()
+  end
+end
+
+local function timerEventHandler(self)
+  self._timer:Stop()
+  if self.EventHandlerDelayTime == 0 then
+    raiseEvent(self)
+  end
+  -- If the EventHandler is used to hide the progress bar, a small delay allows it to remain visible just long enough
+  -- to be seen
+  Timer.CallAfter(function()
+    raiseEvent(self)
+  end, self.EventHandlerDelayTime)
+end
+
 --- Create a new progress bar object.
 --- @param control table The control to use as a progress bar, usually a knob or fader.
 --- @param rampTime number? The time (s) to ramp the progress bar from 0% to 100%, default is 10s.
@@ -13,14 +31,12 @@ function ProgressBar:New(control, rampTime, invert)
     SkipRampTime = 0.2,
     Invert = invert or false,
     _timer = Timer.New(),
-    EventHandler = nil
+    EventHandler = nil,
+    EventHandlerDelayTime = 0.2
   }
 
   obj._timer.EventHandler = function()
-    obj._timer:Stop()
-    if obj.EventHandler ~= nil then
-      obj.EventHandler()
-    end
+    timerEventHandler(obj)
   end
 
   self.__index = self
@@ -34,7 +50,7 @@ function ProgressBar:Start()
   self.Control.Position = self.invert and 1 or 0
   self.Control.RampTime = self.RampTime
   self.Control.Position = self.invert and 0 or 1
-  self._timer:Start(self.RampTime)
+    self._timer:Start(self.RampTime)
 end
 
 --- Quickly ramp the progress bar to the end from it's current position.
