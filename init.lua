@@ -50,7 +50,10 @@ function ProgressBar:Start()
   self.Control.Position = self.invert and 1 or 0
   self.Control.RampTime = self.RampTime
   self.Control.Position = self.invert and 0 or 1
+  -- Assume EventHandler will not change during the ramp time
+  if self.EventHandler ~= nil then
     self._timer:Start(self.RampTime)
+  end
 end
 
 --- Quickly ramp the progress bar to the end from it's current position.
@@ -58,7 +61,9 @@ function ProgressBar:Skip()
   self._timer:Stop()
   self.Control.RampTime = self.SkipRampTime
   self.Control.Position = self.invert and 0 or 1
-  self._timer:Start(self.SkipRampTime)
+  if self.EventHandler ~= nil then
+    self._timer:Start(self.SkipRampTime)
+  end
 end
 
 return ProgressBar
