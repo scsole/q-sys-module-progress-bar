@@ -26,7 +26,7 @@ function ProgressBar:Start()
 end
 
 --- Quickly ramp the progress bar to the end from it's current position.
-function ProgressBar:End()
+function ProgressBar:Skip()
   self.Control.RampTime = self.SkipRampTime
   self.Control.Position = self.invert and 0 or 1
 end

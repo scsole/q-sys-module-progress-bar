@@ -19,5 +19,5 @@ Add a meter or fader control and style it as desired. The `Units`, `Min`, and `M
 local ProgressBar = require('progress-bar')
 local myBar = ProgressBar:New(Controls.ProgressMeter, 10, false)
 myBar:Start()
-myBar:End()
+myBar:Skip()
 ```
